@@ -83,20 +83,20 @@
         <p id="mentalState">Geistige Stabilität: 100%</p>
         <h2>Deine Quests:</h2>
         <ul id="questList"></ul>
-        <button onclick="showQuestSelection()">Wähle eine epische Aufgabe</button>
+        <button onclick="game.showQuestSelection()">Wähle eine epische Aufgabe</button>
         
         <div id="questSelection" class="hidden">
             <h2>Wähle eine Aufgabe, die das Schicksal fordert:</h2>
             <select id="questDropdown"></select>
-            <button onclick="startQuest()">Starten</button>
+            <button onclick="game.startQuest()">Starten</button>
         </div>
 
         <div id="questActions" class="hidden">
             <h2>Deine Herausforderung:</h2>
             <p id="currentQuest"></p>
-            <button onclick="chooseAction(0)">Wähle deine Handlung: Option 1</button>
-            <button onclick="chooseAction(1)">Wähle deine Handlung: Option 2</button>
-            <button onclick="chooseAction(2)">Wähle deine Handlung: Option 3</button>
+            <button onclick="game.chooseAction(0)">Wähle deine Handlung: Option 1</button>
+            <button onclick="game.chooseAction(1)">Wähle deine Handlung: Option 2</button>
+            <button onclick="game.chooseAction(2)">Wähle deine Handlung: Option 3</button>
         </div>
 
     <script>
@@ -230,9 +230,13 @@
                 this.currentQuest = selectedQuest;
                 document.getElementById("currentQuest").innerText = this.quests[selectedQuest].story;
                 let buttons = document.querySelectorAll("#questActions button");
-                this.quests[selectedQuest].options.forEach((option, index) => {
-                    buttons[index].innerText = option.text;
-                });
+                if (this.quests[selectedQuest].options) {
+                    this.quests[selectedQuest].options.forEach((option, index) => {
+                        if (buttons[index]) {
+                            buttons[index].innerText = option.text;
+                        }
+                    });
+                }
                 document.getElementById("questActions").classList.remove("hidden");
             }
 
@@ -269,10 +273,6 @@
         }
 
         let game = new TextAdventure();
-
-        function showQuestSelection() { game.showQuestSelection(); }
-        function startQuest() { game.startQuest(); }
-        function chooseAction(index) { game.chooseAction(index); }
 
         function startGame() {
             document.getElementById("startScreen").style.display = "none";
