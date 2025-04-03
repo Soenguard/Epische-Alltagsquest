@@ -32,34 +32,61 @@
     margin-top: 20px;
 }
 
-/* Zentrierung für die Herausforderung und Text */
+/* Der Text in der QuestActions Box bleibt zentriert */
 #currentQuest {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Buttons mittig ausrichten */
-#questActions button {
-    margin: 10px;
-    width: 200px; /* Optional: Setzt eine feste Breite für die Buttons */
+/* Flexbox für die Buttons nebeneinander */
+#questActions .buttonContainer {
+    display: flex;
+    justify-content: center; /* Buttons nebeneinander und mittig */
+    align-items: center;
+    width: 100%;
 }
 
-/* Quest-Auswahl auch mittig */
-#questSelection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
+/* Buttons nebeneinander anordnen */
+#questActions button {
+    margin: 10px;
+    width: auto; /* Die Breite der Buttons wird automatisch angepasst */
+    padding: 10px 20px; /* Optional: Puffer für eine bessere Ansicht */
 }
 
 /* Optional: Hintergrund für Buttons ändern */
-#questActions button, #questSelection button {
+#questActions button {
     background-color: #4CAF50;
     color: white;
     border-radius: 5px;
     font-size: 1.2em;
+}
+
+/* Flexbox für jedes Quest-Element in der Liste */
+#questList li {
+    display: flex;
+    justify-content: space-between; /* Verteilt die Elemente auf der gesamten Breite */
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f0f0f0; /* Optional: Hintergrund für jedes Listenelement */
+    border-radius: 5px; /* Optional: Abrundung der Ecken */
+}
+
+/* Optional: Stil für den linken Teil (Questname) */
+#questList li .questName {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Optional: Stil für den rechten Teil (Status) */
+#questList li .questStatus {
+    color: #007b00; /* Grüner Status für "Abgeschlossen" */
+    font-style: italic;
+}
+
+/* Optional: Stil für nicht abgeschlossene Quests */
+#questList li .questStatus.offen {
+    color: #dc3545; /* Roter Status für "Offen" */
 }
 
         /* Startbildschirm-Styling */
@@ -127,14 +154,15 @@
             <button onclick="game.startQuest()">Starten</button>
         </div>
 
-        <div id="questActions" class="hidden">
-            <h2>Deine Herausforderung:</h2>
-            <p id="currentQuest"></p>
-            <button onclick="game.chooseAction(0)">Wähle deine Handlung: Option 1</button>
-            <button onclick="game.chooseAction(1)">Wähle deine Handlung: Option 2</button>
-            <button onclick="game.chooseAction(2)">Wähle deine Handlung: Option 3</button>
-        </div>
+<div id="questActions" class="hidden">
+    <h2>Deine Herausforderung:</h2>
+    <p id="currentQuest"></p>
+    <div class="buttonContainer">
+        <button onclick="game.chooseAction(0)">Wähle deine Handlung: Option 1</button>
+        <button onclick="game.chooseAction(1)">Wähle deine Handlung: Option 2</button>
+        <button onclick="game.chooseAction(2)">Wähle deine Handlung: Option 3</button>
     </div>
+</div>
 
     <script>
         class TextAdventure {
@@ -236,16 +264,32 @@
                 this.updateUI();
             }
 
-            updateUI() {
-                document.getElementById("mentalState").innerText = `Geistige Stabilität: ${this.mentalState}%`;
-                let questList = document.getElementById("questList");
-                questList.innerHTML = "";
-                for (let q in this.quests) {
-                    let li = document.createElement("li");
-                    li.innerText = `${q} - ${this.progress[q] ? "Abgeschlossen" : "Offen"}`;
-                    questList.appendChild(li);
-                }
-            }
+updateUI() {
+    document.getElementById("mentalState").innerText = `Geistige Stabilität: ${this.mentalState}%`;
+    let questList = document.getElementById("questList");
+    questList.innerHTML = ""; // Leert die Questliste, um Duplikate zu vermeiden
+
+    for (let q in this.quests) {
+        let li = document.createElement("li");
+
+        // Linke Seite: Questname
+        let questName = document.createElement("div");
+        questName.classList.add("questName");
+        questName.innerText = q;
+        
+        // Rechte Seite: Queststatus
+        let questStatus = document.createElement("div");
+        questStatus.classList.add("questStatus");
+        questStatus.classList.add(this.progress[q] ? "abgeschlossen" : "offen");
+        questStatus.innerText = this.progress[q] ? "Abgeschlossen" : "Offen";
+
+        // Füge die beiden Teile zur Liste hinzu
+        li.appendChild(questName);
+        li.appendChild(questStatus);
+        questList.appendChild(li);
+    }
+}
+
 
             showQuestSelection() {
                 let dropdown = document.getElementById("questDropdown");
