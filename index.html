@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<link href="https://fonts.googleapis.com/css2?family=Aniron&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Aniron&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alltags-Quest</title>
@@ -13,7 +12,27 @@
         .hidden { display: none; }
         #questActions button { background-color: #8B4513; }
         #questSelection button { background-color: #C71585; }
-        
+
+        /* Flexbox-Layout für den gesamten Spielinhalt */
+        #gameContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Flexbox für Quest-Action und Quest-Selection */
+        #questActions, #questSelection {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        #questActions button, #questSelection button {
+            margin: 0 5px; /* Abstand zwischen den Buttons */
+        }
+
         /* Startbildschirm-Styling */
         #startScreen {
             position: fixed;
