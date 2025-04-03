@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Aniron&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alltags-Quest</title>
+    <style>
+        body { font-family: 'Aniron', serif; padding: 20px; background-color: #ADD8E6; }
+        h1 { color: #333; font-family: 'Aniron', serif; }
+        button { margin: 5px; padding: 10px; cursor: pointer; background-color: #4CAF50; color: white; border-radius: 5px; }
+        .hidden { display: none; }
+        #questActions button { background-color: #8B4513; }
+        #questSelection button { background-color: #C71585; }
+        
+        /* Startbildschirm-Styling */
+        #startScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        #startScreen button {
+            background-color: white;
+            color: black;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="startScreen">
+        <h1>Willkommen bei Alltags-Quest</h1>
+        <p>Ein episches Abenteuer erwartet dich. Bist du bereit, deine Reise zu beginnen?</p>
+        <button onclick="startGame()" aria-label="Spiel starten">Abenteuer starten</button>
+        <audio id="introMusic">
+            <source src="Test.mp3" type="audio/mpeg">
+            Dein Browser unterstützt keine Audio-Wiedergabe.
+        </audio>
+    </div>
+   
+    <div id="gameContent" class="hidden">
+        <h1>Willkommen, edler Held, in deinem täglichen Abenteuer!</h1>
+        <p id="mentalState">Geistige Stabilität: 100%</p>
+        <h2>Deine Quests:</h2>
+        <ul id="questList"></ul>
+        <button onclick="showQuestSelection()">Wähle eine epische Aufgabe</button>
+        
+        <div id="questSelection" class="hidden">
+            <h2>Wähle eine Aufgabe, die das Schicksal fordert:</h2>
+            <select id="questDropdown"></select>
+            <button onclick="startQuest()">Starten</button>
+        </div>
+
+        <div id="questActions" class="hidden">
+            <h2>Deine Herausforderung:</h2>
+            <p id="currentQuest"></p>
+            <button onclick="chooseAction(0)">Wähle deine Handlung: Option 1</button>
+            <button onclick="chooseAction(1)">Wähle deine Handlung: Option 2</button>
+            <button onclick="chooseAction(2)">Wähle deine Handlung: Option 3</button>
+        </div>
+
+    <script>
+        class TextAdventure {
+            constructor() {
+                this.quests = {
+                    "Die Reise zum dunklen Turm": {
+                        story: "In den tiefen Schatten von Mordor, hinter den Mauern des dunklen Turms, liegt ein gefährlicher Fluch, der das Land bedroht. Nur ein tapferer Held kann sich den Gefahren stellen und den Turm betreten, um das Geheimnis zu lüften.",
+                        options: [
+                            { text: "Die Reise antreten, trotz der Gefahren", effect: -10 },
+                            { text: "Mit Bedacht reisen und nur in den sicheren Stunden wandern", effect: -5 },
+                            { text: "Vorsicht walten lassen und auf eine Begleitung warten", effect: -8 }
+                        ]
+                    },
+                    "Rette die Dörfer vor den Schatten von Mordor": {
+                        story: "Die Schatten von Mordor haben die umliegenden Dörfer heimgesucht, und die Dorfbewohner sind in Panik. Du musst sie retten, bevor es zu spät ist. Doch wird dein Mut reichen, die Dunkelheit zu vertreiben?",
+                        options: [
+                            { text: "Unerschrocken in den Kampf ziehen", effect: -15 },
+                            { text: "Die Dorfbewohner zur Flucht anweisen", effect: -10 },
+                            { text: "Verstecken und auf bessere Zeiten warten", effect: -20 }
+                        ]
+                    },
+                    "Die geheimen Schriftrollen des Elbenreichs": {
+                        story: "In den geheimen Hallen der Elben ruhen uralte Schriftrollen, die das Wissen und die Macht vergangener Zeiten enthalten. Doch das Öffnen dieser Schriftrollen birgt Gefahren. Wirst du den Mut finden, in ihre tiefsten Geheimnisse vorzudringen?",
+                        options: [
+                            { text: "Mit den Elben die Schriftrollen durchsuchen", effect: -5 },
+                            { text: "Allein nach den Schriftrollen suchen", effect: -10 },
+                            { text: "Warten, bis ein Elb zu Hilfe kommt", effect: -8 }
+                        ]
+                    },
+                    "Der Diebstahl der Königskrone von Gondor": {
+                        story: "Die Königskrone von Gondor wurde von einem Dieb gestohlen, und das Land droht in Unordnung zu stürzen. Deine Aufgabe ist es, den Dieb zu verfolgen und die Krone zurückzuholen, bevor es zu spät ist.",
+                        options: [
+                            { text: "Den Dieb selbst verfolgen und stoppen", effect: -12 },
+                            { text: "Die Wachen alarmieren und auf deren Hilfe warten", effect: -8 },
+                            { text: "Fliehen und den Dieb in Ruhe lassen", effect: -15 }
+                        ]
+                    },
+                    "Bringe das Tagesbrot zum Marktplatz": {
+                        story: "Es ist ein ruhiger Morgen im Auenland, und du wirst beauftragt, frisches Brot zum Marktplatz zu bringen. Doch der Weg ist lang, und die Zeit drängt. Werden die Hobbits rechtzeitig ihre Mahlzeit erhalten?",
+                        options: [
+                            { text: "Eilig den Weg entlang rennen", effect: -5 },
+                            { text: "Langsam und besonnen gehen, den Moment genießen", effect: -3 },
+                            { text: "Den Weg verlieren und fast zu spät kommen", effect: -7 }
+                        ]
+                    },
+                    "Kämpfe gegen den Wäscheberg": {
+                        story: "Der Wäscheberg, so hoch wie der Mount Doom, droht das ganze Haus zu erobern. Nur ein wahrer Held kann sich ihm stellen und die Wäsche ordnungsgemäß sortieren. Schaffst du es?",
+                        options: [
+                            { text: "Alle Wäsche auf einmal erledigen", effect: -6 },
+                            { text: "Die Wäsche ordentlich sortieren und nach Plan vorgehen", effect: -4 },
+                            { text: "Den Berg der Wäsche ignorieren und auf morgen verschieben", effect: -8 }
+                        ]
+                    },
+                    "Besuche den Schmied und repariere dein Schwert": {
+                        story: "Das Schwert, das du im Kampf gegen die dunklen Kreaturen von Mordor trägst, ist zerbrochen. Der Schmied erwartet dich, um das Schwert zu reparieren. Doch die Schmiede ist nicht leicht zu finden, und du musst dich beeilen, wenn du den nächsten Kampf überstehen willst.",
+                        options: [
+                            { text: "Die Schmiede aufsuchen und das Schwert mit Kraft reparieren", effect: -7 },
+                            { text: "Geduldig auf den richtigen Moment warten", effect: -5 },
+                            { text: "Das Schwert über Nacht liegen lassen und morgen mehr daran arbeiten", effect: -4 }
+                        ]
+                    },
+                    "Füttere den Drachen (oder dein Haustier)": {
+                        story: "Ein Drache (oder dein Haustier) wartet hungrig auf seine Mahlzeit. Wird deine Zubereitung ausreichen, um das Biest zu besänftigen, oder wirst du das Gefühl haben, den Drachen zu zähmen müssen?",
+                        options: [
+                            { text: "Mit einer prächtigen Mahlzeit den Drachen füttern", effect: -4 },
+                            { text: "Ein einfaches Mahl vorbereiten", effect: -3 },
+                            { text: "Den Drachen ignorieren und auf den nächsten Tag warten", effect: -6 }
+                        ]
+                    },
+                    "Tausche Geschichten mit den Wanderern": {
+                        story: "Am Lagerfeuer teilen die Wanderer ihre Geschichten aus längst vergangenen Zeiten. Doch eine dunkle Vorahnung liegt in der Luft, und du kannst nicht umhin, ihre Worte zu hinterfragen. Wirst du ihnen lauschen und dich von ihrer Weisheit leiten lassen?",
+                        options: [
+                            { text: "Höre aufmerksam zu und teile epische Geschichten", effect: -5 },
+                            { text: "Eher schweigen und auf ein Zeichen warten", effect: -3 },
+                            { text: "Ein unbedeutendes Gespräch führen und schnell weiterziehen", effect: -7 }
+                        ]
+                    },
+                    "Bezwinge das Chaos des Arbeitsstapels": {
+                        story: "Vor dir liegt ein Berg aus Aufgaben, der größer ist als jeder Drache, den du je besiegt hast. Doch du bist ein Held, und es liegt an dir, das Chaos zu bezwingen und die Ordnung wiederherzustellen.",
+                        options: [
+                            { text: "Schnell und entschlossen alles abarbeiten", effect: -10 },
+                            { text: "Schritt für Schritt, methodisch und ruhig", effect: -5 },
+                            { text: "Den Stapel ignorieren und hoffen, dass er von alleine verschwindet", effect: -12 }
+                        ]
+                    },
+                    "Erobere das unerschütterliche Bett": {
+                        story: "Das Bett ruft nach dir, und der Morgen ist kalt. Doch das Abenteuer verlangt nach dir, und du kannst nicht länger ruhen. Wirst du dem Ruf des Abenteuers folgen oder das sanfte Kissen erobern?",
+                        options: [
+                            { text: "Sich der Herausforderung stellen und das Bett um 6 Uhr verlassen", effect: -8 },
+                            { text: "Noch ein wenig ruhen, aber mit festem Ziel aufstehen", effect: -4 },
+                            { text: "Im Bett bleiben, bis es fast zu spät ist", effect: -10 }
+                        ]
+                    }
+                };
+                this.progress = {};
+                for (let q in this.quests) this.progress[q] = false;
+                this.mentalState = 100;
+                this.currentQuest = "";
+                this.updateUI();
+            }
+
+            updateUI() {
+                document.getElementById("mentalState").innerText = `Geistige Stabilität: ${this.mentalState}%`;
+                let questList = document.getElementById("questList");
+                questList.innerHTML = "";
+                for (let q in this.quests) {
+                    let li = document.createElement("li");
+                    li.innerText = `${q} - ${this.progress[q] ? "Abgeschlossen" : "Offen"}`;
+                    questList.appendChild(li);
+                }
+            }
+
+            showQuestSelection() {
+                let dropdown = document.getElementById("questDropdown");
+                dropdown.innerHTML = ""; // Verhindert Duplikate
+                for (let q in this.quests) {
+                    if (!this.progress[q]) {
+                        let option = document.createElement("option");
+                        option.value = q;
+                        option.innerText = q;
+                        dropdown.appendChild(option);
+                    }
+                }
+                document.getElementById("questSelection").classList.remove("hidden");
+            }
+
+            startQuest() {
+                let selectedQuest = document.getElementById("questDropdown").value;
+                if (!selectedQuest) return;
+                this.currentQuest = selectedQuest;
+                document.getElementById("currentQuest").innerText = this.quests[selectedQuest].story;
+                let buttons = document.querySelectorAll("#questActions button");
+                this.quests[selectedQuest].options.forEach((option, index) => {
+                    buttons[index].innerText = option.text;
+                });
+                document.getElementById("questActions").classList.remove("hidden");
+            }
+
+            chooseAction(index) {
+                let effects = this.quests[this.currentQuest].options[index];
+                
+                // Zufallseinfluss, um zu bestimmen, ob die Aktion erfolgreich oder gescheitert ist
+                let failChance = Math.random(); // Zufallszahl zwischen 0 und 1
+                let failureThreshold = 0.33; // 33% Chance auf Fehlschlag
+
+                if (failChance < failureThreshold) {
+                    // Fehlerfall, wenn die Zufallszahl kleiner als der Schwellenwert ist
+                    let failureEffect = Math.floor(Math.random() * 10) + 5; // zufällige Strafe zwischen 5 und 15
+                    this.mentalState -= failureEffect;
+                    alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${failureEffect}% gesenkt.`);
+                } else {
+                    // Erfolgsfall
+                    alert(`Du hast gewählt: ${effects.text}. Geistige Stabilität -${effects.effect}%`);
+                    this.mentalState -= effects.effect;
+                }
+
+                this.progress[this.currentQuest] = true;
+                this.currentQuest = "";
+
+                if (this.mentalState <= 0) {
+                    alert("Du bist geistig am Ende. Deine Reise endet hier...");
+                    return;
+                }
+
+                this.updateUI();
+                document.getElementById("questSelection").classList.add("hidden");
+                document.getElementById("questActions").classList.add("hidden");
+            }
+        }
+
+        let game = new TextAdventure();
+
+        function showQuestSelection() { game.showQuestSelection(); }
+        function startQuest() { game.startQuest(); }
+        function chooseAction(index) { game.chooseAction(index); }
+
+        function startGame() {
+            document.getElementById("startScreen").style.display = "none";
+            document.getElementById("gameContent").classList.remove("hidden");
+
+            let audio = document.getElementById("introMusic");
+            if (audio) {
+                audio.play().catch((error) => {
+                    console.error("Fehler beim Abspielen der Musik:", error);
+                });
+            } else {
+                console.warn("Audio-Datei nicht gefunden!");
+            }
+        }
+    </script>
+</body>
+</html>
