@@ -13,81 +13,81 @@
         #questActions button { background-color: #8B4513; }
         #questSelection button { background-color: #C71585; }
 
-/* Flexbox für den gesamten Spielinhalt */
-#gameContent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; /* Zentriert den Inhalt auch vertikal */
-    height: 100vh; /* Stellt sicher, dass der gesamte Bildschirm genutzt wird */
-}
+        /* Flexbox für den gesamten Spielinhalt */
+        #gameContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Zentriert den Inhalt auch vertikal */
+            height: 100vh; /* Stellt sicher, dass der gesamte Bildschirm genutzt wird */
+        }
 
-/* Zentrierung für Quest-Aktionen */
-#questActions {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
-}
+        /* Zentrierung für Quest-Aktionen */
+        #questActions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+        }
 
-/* Der Text in der QuestActions Box bleibt zentriert */
-#currentQuest {
-    text-align: center;
-    margin-bottom: 20px;
-}
+        /* Der Text in der QuestActions Box bleibt zentriert */
+        #currentQuest {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-/* Flexbox für die Buttons nebeneinander */
-#questActions .buttonContainer {
-    display: flex;
-    justify-content: center; /* Buttons nebeneinander und mittig */
-    align-items: center;
-    width: 100%;
-}
+        /* Flexbox für die Buttons nebeneinander */
+        #questActions .buttonContainer {
+            display: flex;
+            justify-content: center; /* Buttons nebeneinander und mittig */
+            align-items: center;
+            width: 100%;
+        }
 
-/* Buttons nebeneinander anordnen */
-#questActions button {
-    margin: 10px;
-    width: auto; /* Die Breite der Buttons wird automatisch angepasst */
-    padding: 10px 20px; /* Optional: Puffer für eine bessere Ansicht */
-}
+        /* Buttons nebeneinander anordnen */
+        #questActions button {
+            margin: 10px;
+            width: auto; /* Die Breite der Buttons wird automatisch angepasst */
+            padding: 10px 20px; /* Optional: Puffer für eine bessere Ansicht */
+        }
 
-/* Optional: Hintergrund für Buttons ändern */
-#questActions button {
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 5px;
-    font-size: 1.2em;
-}
+        /* Optional: Hintergrund für Buttons ändern */
+        #questActions button {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            font-size: 1.2em;
+        }
 
-/* Flexbox für jedes Quest-Element in der Liste */
-#questList li {
-    display: flex;
-    justify-content: space-between; /* Verteilt die Elemente auf der gesamten Breite */
-    align-items: center;
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #f0f0f0; /* Optional: Hintergrund für jedes Listenelement */
-    border-radius: 5px; /* Optional: Abrundung der Ecken */
-}
+        /* Flexbox für jedes Quest-Element in der Liste */
+        #questList li {
+            display: flex;
+            justify-content: space-between; /* Verteilt die Elemente auf der gesamten Breite */
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f0f0f0; /* Optional: Hintergrund für jedes Listenelement */
+            border-radius: 5px; /* Optional: Abrundung der Ecken */
+        }
 
-/* Optional: Stil für den linken Teil (Questname) */
-#questList li .questName {
-    font-weight: bold;
-    color: #333;
-}
+        /* Optional: Stil für den linken Teil (Questname) */
+        #questList li .questName {
+            font-weight: bold;
+            color: #333;
+        }
 
-/* Optional: Stil für den rechten Teil (Status) */
-#questList li .questStatus {
-    color: #007b00; /* Grüner Status für "Abgeschlossen" */
-    font-style: italic;
-}
+        /* Optional: Stil für den rechten Teil (Status) */
+        #questList li .questStatus {
+            color: #007b00; /* Grüner Status für "Abgeschlossen" */
+            font-style: italic;
+        }
 
-/* Optional: Stil für nicht abgeschlossene Quests */
-#questList li .questStatus.offen {
-    color: #dc3545; /* Roter Status für "Offen" */
-}
+        /* Optional: Stil für nicht abgeschlossene Quests */
+        #questList li .questStatus.offen {
+            color: #dc3545; /* Roter Status für "Offen" */
+        }
 
         /* Startbildschirm-Styling */
         #startScreen {
@@ -128,6 +128,34 @@
         #gameContent.hidden, #questSelection.hidden, #questActions.hidden {
             display: none;
         }
+        
+        /* Siegesanimation */
+        @keyframes victoryAnimation {
+            0% { transform: scale(1); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+
+        #victoryAnimation {
+            display: none;
+            color: #28a745; /* Grün für Sieg */
+            font-size: 2em;
+            animation: victoryAnimation 1s forwards;
+        }
+
+        /* Traurige Smiley-Animation */
+        @keyframes sadSmileyAnimation {
+            0% { transform: rotate(0deg); opacity: 0; }
+            50% { transform: rotate(-20deg); opacity: 1; }
+            100% { transform: rotate(20deg); opacity: 0; }
+        }
+
+        #sadSmiley {
+            display: none;
+            color: #dc3545; /* Rot für Traurig */
+            font-size: 2em;
+            animation: sadSmileyAnimation 1s forwards;
+        }
     </style>
 </head>
 <body>
@@ -148,21 +176,26 @@
         <ul id="questList"></ul>
         <button onclick="game.showQuestSelection()">Wähle eine epische Aufgabe</button>
         
+        <div id="victoryAnimation">🎉 Du hast gewonnen! 🎉</div>
+        <div id="sadSmiley">😞 Das ist schade… 😞</div>
+
         <div id="questSelection" class="hidden">
             <h2>Wähle eine Aufgabe, die das Schicksal fordert:</h2>
             <select id="questDropdown"></select>
             <button onclick="game.startQuest()">Starten</button>
         </div>
 
-<div id="questActions" class="hidden">
-    <h2>Deine Herausforderung:</h2>
-    <p id="currentQuest"></p>
-    <div class="buttonContainer">
-        <button onclick="game.chooseAction(0)">Wähle deine Handlung: Option 1</button>
-        <button onclick="game.chooseAction(1)">Wähle deine Handlung: Option 2</button>
-        <button onclick="game.chooseAction(2)">Wähle deine Handlung: Option 3</button>
+        <div id="questActions" class="hidden">
+            <h2>Deine Herausforderung:</h2>
+            <p id="currentQuest"></p>
+            <div class="buttonContainer">
+                <button onclick="game.chooseAction(0)">Wähle deine Handlung: Option 1</button>
+                <button onclick="game.chooseAction(1)">Wähle deine Handlung: Option 2</button>
+                <button onclick="game.chooseAction(2)">Wähle deine Handlung: Option 3</button>
+            </div>
+        </div>
+
     </div>
-</div>
 
     <script>
         class TextAdventure {
@@ -263,33 +296,32 @@
                 this.currentQuest = "";
                 this.updateUI();
             }
+			
+            updateUI() {
+                document.getElementById("mentalState").innerText = `Geistige Stabilität: ${this.mentalState}%`;
+                let questList = document.getElementById("questList");
+                questList.innerHTML = ""; // Leert die Questliste, um Duplikate zu vermeiden
 
-updateUI() {
-    document.getElementById("mentalState").innerText = `Geistige Stabilität: ${this.mentalState}%`;
-    let questList = document.getElementById("questList");
-    questList.innerHTML = ""; // Leert die Questliste, um Duplikate zu vermeiden
+                for (let q in this.quests) {
+                    let li = document.createElement("li");
 
-    for (let q in this.quests) {
-        let li = document.createElement("li");
+                    // Linke Seite: Questname
+                    let questName = document.createElement("div");
+                    questName.classList.add("questName");
+                    questName.innerText = q;
+                    
+                    // Rechte Seite: Queststatus
+                    let questStatus = document.createElement("div");
+                    questStatus.classList.add("questStatus");
+                    questStatus.classList.add(this.progress[q] ? "abgeschlossen" : "offen");
+                    questStatus.innerText = this.progress[q] ? "Abgeschlossen" : "Offen";
 
-        // Linke Seite: Questname
-        let questName = document.createElement("div");
-        questName.classList.add("questName");
-        questName.innerText = q;
-        
-        // Rechte Seite: Queststatus
-        let questStatus = document.createElement("div");
-        questStatus.classList.add("questStatus");
-        questStatus.classList.add(this.progress[q] ? "abgeschlossen" : "offen");
-        questStatus.innerText = this.progress[q] ? "Abgeschlossen" : "Offen";
-
-        // Füge die beiden Teile zur Liste hinzu
-        li.appendChild(questName);
-        li.appendChild(questStatus);
-        questList.appendChild(li);
-    }
-}
-
+                    // Füge die beiden Teile zur Liste hinzu
+                    li.appendChild(questName);
+                    li.appendChild(questStatus);
+                    questList.appendChild(li);
+                }
+            }
 
             showQuestSelection() {
                 let dropdown = document.getElementById("questDropdown");
@@ -332,24 +364,38 @@ updateUI() {
                     // Fehlerfall, wenn die Zufallszahl kleiner als der Schwellenwert ist
                     let failureEffect = Math.floor(Math.random() * 10) + 5; // zufällige Strafe zwischen 5 und 15
                     this.mentalState -= failureEffect;
+                    
+                    // Zeige den traurigen Smiley
+                    document.getElementById("sadSmiley").style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("sadSmiley").style.display = "none";
+                    }, 1000); // Zeige den Smiley für 1 Sekunde
+
                     alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${failureEffect}% gesenkt.`);
                 } else {
                     // Erfolgsfall
-                    alert(`Du hast gewählt: ${effects.text}. Geistige Stabilität -${effects.effect}%`);
-                    this.mentalState -= effects.effect;
+                    this.mentalState += effects.effect;
+                    alert(`Die Aktion war erfolgreich! Deine geistige Stabilität ist um ${effects.effect}% erhöht.`);
                 }
 
-                this.progress[this.currentQuest] = true;
-                this.currentQuest = "";
-
                 if (this.mentalState <= 0) {
-                    alert("Du bist geistig am Ende. Deine Reise endet hier...");
+                    alert("Oh nein! Deine geistige Stabilität ist aufgebraucht. Das Abenteuer endet hier.");
                     return;
                 }
 
+                this.progress[this.currentQuest] = true;
                 this.updateUI();
-                document.getElementById("questSelection").classList.add("hidden");
+
+                // Zeige den Siegseffekt
+                if (this.progress[this.currentQuest]) {
+                    document.getElementById("victoryAnimation").style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("victoryAnimation").style.display = "none";
+                    }, 2000); // Zeige den Sieges-Emoji für 2 Sekunden
+                }
+
                 document.getElementById("questActions").classList.add("hidden");
+                this.currentQuest = "";
             }
         }
 
@@ -358,15 +404,8 @@ updateUI() {
         function startGame() {
             document.getElementById("startScreen").style.display = "none";
             document.getElementById("gameContent").classList.remove("hidden");
-
-            let audio = document.getElementById("introMusic");
-            if (audio) {
-                audio.play().catch((error) => {
-                    console.error("Fehler beim Abspielen der Musik:", error);
-                });
-            } else {
-                console.warn("Audio-Datei nicht gefunden!");
-            }
+            document.getElementById("questSelection").classList.remove("hidden");
+            game.updateUI();
         }
     </script>
 </body>
