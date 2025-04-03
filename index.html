@@ -50,6 +50,7 @@
             opacity: 0;
             animation: fadeIn 2s forwards;
         }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -58,6 +59,7 @@
                 opacity: 1;
             }
         }
+
         #startScreen button {
             background-color: white;
             color: black;
@@ -65,12 +67,17 @@
             padding: 10px 20px;
             margin-top: 20px;
         }
+
+        /* Verhindert das Anzeigefehler der Elemente */
+        #gameContent.hidden, #questSelection.hidden, #questActions.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div id="startScreen">
         <h1>Willkommen bei den Epischen Alltags-Quests</h1>
-        <p>Ein Abenteuer epochalem ausmaßes erwartet dich. Bist du bereit, deine Reise zu beginnen?</p>
+        <p>Ein Abenteuer epochalem Ausmaßes erwartet dich. Bist du bereit, deine Reise zu beginnen?</p>
         <button onclick="startGame()" aria-label="Spiel starten">Abenteuer starten</button>
         <audio id="introMusic">
             <source src="Test.mp3" type="audio/mpeg">
@@ -98,6 +105,7 @@
             <button onclick="game.chooseAction(1)">Wähle deine Handlung: Option 2</button>
             <button onclick="game.chooseAction(2)">Wähle deine Handlung: Option 3</button>
         </div>
+    </div>
 
     <script>
         class TextAdventure {
