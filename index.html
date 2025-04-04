@@ -361,16 +361,22 @@ chooseAction(index) {
     let failureThreshold = 0.33; // 33% Chance auf Fehlschlag
     let finalEffect = effects.effect; // Standardmäßig die geplante Wirkung
 
-    if (failChance < failureThreshold) {
-        // Fehlerfall, wenn die Zufallszahl kleiner als der Schwellenwert ist
-        finalEffect = -(Math.floor(Math.random() * 10) + 5); // zufällige Strafe zwischen -5 und -15
+if (failChance < failureThreshold) {
+    finalEffect = -(Math.floor(Math.random() * 10) + 5); // zufällige Strafe zwischen -5 und -15
+    alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${Math.abs(finalEffect)}% gesenkt.`);
+}
 
-        // Traurige Smiley-Animation immer anzeigen, wenn ein Fehler passiert
-        document.getElementById("sadSmiley").style.display = "block";
-        setTimeout(() => {
-            document.getElementById("sadSmiley").style.display = "none";
-        }, 1000);
-
+// Zeige die Animation **immer**, wenn die Wirkung negativ ist
+if (finalEffect < 0) {
+    document.getElementById("sadSmiley").style.display = "block";
+    setTimeout(() => {
+        document.getElementById("sadSmiley").style.display = "none";
+    }, 1000);
+} else {
+    document.getElementById("victoryAnimation").style.display = "block";
+    setTimeout(() => {
+        document.getElementById("victoryAnimation").style.display = "none";
+    }, 2000);
         alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${Math.abs(finalEffect)}% gesenkt.`);
     } else {
         alert(`Die Aktion war erfolgreich! Deine geistige Stabilität ist um ${finalEffect}% verändert.`);
