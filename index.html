@@ -359,49 +359,34 @@ chooseAction(index) {
     // Zufallseinfluss, um zu bestimmen, ob die Aktion erfolgreich oder gescheitert ist
     let failChance = Math.random(); // Zufallszahl zwischen 0 und 1
     let failureThreshold = 0.33; // 33% Chance auf Fehlschlag
-    let finalEffect = effects.effect; // Standardmäßig die geplante Wirkung
+    let finalEffect = 0; // Standardmäßig keine Änderung an der Stabilität
 
-if (failChance < failureThreshold) {
-    finalEffect = -(Math.floor(Math.random() * 10) + 5); // zufällige Strafe zwischen -5 und -15
-    alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${Math.abs(finalEffect)}% gesenkt.`);
-}
-
-// Zeige die Animation **immer**, wenn die Wirkung negativ ist
-if (finalEffect < 0) {
-    document.getElementById("sadSmiley").style.display = "block";
-    setTimeout(() => {
-        document.getElementById("sadSmiley").style.display = "none";
-    }, 1000);
-} else {
-    document.getElementById("victoryAnimation").style.display = "block";
-    setTimeout(() => {
-        document.getElementById("victoryAnimation").style.display = "none";
-    }, 2000);
+    if (failChance < failureThreshold) {
+        finalEffect = -(Math.floor(Math.random() * 10) + 5); // zufällige Strafe zwischen -5 und -15
         alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${Math.abs(finalEffect)}% gesenkt.`);
-    } else {
-        alert(`Die Aktion war erfolgreich! Deine geistige Stabilität ist um ${finalEffect}% verändert.`);
-    }
 
-    // Update der Stabilität
-    this.mentalState += finalEffect;
-
-    // Zeige die entsprechende Animation abhängig vom Effekt
-    if (finalEffect > 0) {
-        document.getElementById("victoryAnimation").style.display = "block";
-        setTimeout(() => {
-            document.getElementById("victoryAnimation").style.display = "none";
-        }, 2000);
-    } else if (finalEffect < 0) {
+        // Zeige die Fehlschlag-Animation
         document.getElementById("sadSmiley").style.display = "block";
         setTimeout(() => {
             document.getElementById("sadSmiley").style.display = "none";
         }, 1000);
-    }
 
-    // Überprüfe, ob die geistige Stabilität aufgebraucht ist
-    if (this.mentalState <= 0) {
-        alert("Oh nein! Deine geistige Stabilität ist aufgebraucht. Das Abenteuer endet hier.");
-        return;
+        // Update der Stabilität nur bei Fehlschlag
+        this.mentalState += finalEffect;
+
+        // Überprüfe, ob die geistige Stabilität aufgebraucht ist
+        if (this.mentalState <= 0) {
+            alert("Oh nein! Deine geistige Stabilität ist aufgebraucht. Das Abenteuer endet hier.");
+            return;
+        }
+    } else {
+        alert(`Die Aktion war erfolgreich! Deine geistige Stabilität bleibt erhalten.`);
+        
+        // Zeige die Erfolg-Animation
+        document.getElementById("victoryAnimation").style.display = "block";
+        setTimeout(() => {
+            document.getElementById("victoryAnimation").style.display = "none";
+        }, 2000);
     }
 
     this.progress[this.currentQuest] = true;
