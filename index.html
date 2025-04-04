@@ -370,18 +370,10 @@ chooseAction(index) {
         setTimeout(() => {
             document.getElementById("sadSmiley").style.display = "none";
         }, 1000);
-
-        // Update der Stabilität nur bei Fehlschlag
-        this.mentalState += finalEffect;
-
-        // Überprüfe, ob die geistige Stabilität aufgebraucht ist
-        if (this.mentalState <= 0) {
-            alert("Oh nein! Deine geistige Stabilität ist aufgebraucht. Das Abenteuer endet hier.");
-            return;
-        }
     } else {
-        alert(`Die Aktion war erfolgreich! Deine geistige Stabilität bleibt erhalten.`);
-        
+        finalEffect = Math.floor(Math.random() * 10) + 5; // zufällige Belohnung zwischen +5 und +15
+        alert(`Die Aktion war erfolgreich! Deine geistige Stabilität steigt um ${finalEffect}%.`);
+
         // Zeige die Erfolg-Animation
         document.getElementById("victoryAnimation").style.display = "block";
         setTimeout(() => {
@@ -389,12 +381,17 @@ chooseAction(index) {
         }, 2000);
     }
 
+    // Aktualisiere die geistige Stabilität
+    this.mentalState += finalEffect;
+    if (this.mentalState > 100) this.mentalState = 100; // Begrenze die Stabilität auf maximal 100%
+
     this.progress[this.currentQuest] = true;
     this.updateUI();
 
     document.getElementById("questActions").classList.add("hidden");
     this.currentQuest = "";
 }
+
 
         }
 
