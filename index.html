@@ -359,40 +359,40 @@ chooseAction(index) {
     // Zufallseinfluss, um zu bestimmen, ob die Aktion erfolgreich oder gescheitert ist
     let failChance = Math.random(); // Zufallszahl zwischen 0 und 1
     let failureThreshold = 0.33; // 33% Chance auf Fehlschlag
+    let finalEffect = effects.effect; // Standardmäßig die geplante Wirkung
 
     if (failChance < failureThreshold) {
         // Fehlerfall, wenn die Zufallszahl kleiner als der Schwellenwert ist
-        let failureEffect = Math.floor(Math.random() * 10) + 5; // zufällige Strafe zwischen 5 und 15
-        this.mentalState -= failureEffect;
+        finalEffect = -(Math.floor(Math.random() * 10) + 5); // zufällige Strafe zwischen -5 und -15
 
-        // Traurige Smiley-Animation anzeigen
+        // Traurige Smiley-Animation immer anzeigen, wenn ein Fehler passiert
         document.getElementById("sadSmiley").style.display = "block";
         setTimeout(() => {
             document.getElementById("sadSmiley").style.display = "none";
-        }, 1000); // Zeige den Smiley für 2 Sekunde
+        }, 1000);
 
-        alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${failureEffect}% gesenkt.`);
+        alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${Math.abs(finalEffect)}% gesenkt.`);
     } else {
-        // Erfolgsfall
-        this.mentalState += effects.effect;
-
-        if (effects.effect > 0) {
-            // Nur wenn die Stabilität steigt, wird die Siegesanimation angezeigt
-            document.getElementById("victoryAnimation").style.display = "block";
-            setTimeout(() => {
-                document.getElementById("victoryAnimation").style.display = "none";
-            }, 2000); // Zeige den Sieges-Emoji für 2 Sekunden
-        } else {
-            // Wenn die Stabilität sinkt, zeige die traurige Smiley-Animation
-            document.getElementById("sadSmiley").style.display = "block";
-            setTimeout(() => {
-                document.getElementById("sadSmiley").style.display = "none";
-            }, 1000); // Zeige den Smiley für 2 Sekunde
-        }
-
-        alert(`Die Aktion war erfolgreich! Deine geistige Stabilität ist um ${effects.effect}% erhöht.`);
+        alert(`Die Aktion war erfolgreich! Deine geistige Stabilität ist um ${finalEffect}% verändert.`);
     }
 
+    // Update der Stabilität
+    this.mentalState += finalEffect;
+
+    // Zeige die entsprechende Animation abhängig vom Effekt
+    if (finalEffect > 0) {
+        document.getElementById("victoryAnimation").style.display = "block";
+        setTimeout(() => {
+            document.getElementById("victoryAnimation").style.display = "none";
+        }, 2000);
+    } else if (finalEffect < 0) {
+        document.getElementById("sadSmiley").style.display = "block";
+        setTimeout(() => {
+            document.getElementById("sadSmiley").style.display = "none";
+        }, 1000);
+    }
+
+    // Überprüfe, ob die geistige Stabilität aufgebraucht ist
     if (this.mentalState <= 0) {
         alert("Oh nein! Deine geistige Stabilität ist aufgebraucht. Das Abenteuer endet hier.");
         return;
