@@ -401,12 +401,16 @@
 
         let game = new TextAdventure();
 
-        function startGame() {
-            document.getElementById("startScreen").style.display = "none";
-            document.getElementById("gameContent").classList.remove("hidden");
-            document.getElementById("questSelection").classList.remove("hidden");
-            game.updateUI();
-        }
+function startGame() {
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("gameContent").classList.remove("hidden");
+    document.getElementById("questSelection").classList.remove("hidden");
+    game.updateUI();
+
+    let introMusic = document.getElementById("introMusic");
+    introMusic.volume = 0.5; // Setzt die Lautstärke (optional)
+    introMusic.play().catch(error => console.log("Autoplay wurde blockiert:", error));
+}
     </script>
 </body>
 </html>
