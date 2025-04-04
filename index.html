@@ -323,19 +323,28 @@
                 }
             }
 
-            showQuestSelection() {
-                let dropdown = document.getElementById("questDropdown");
-                dropdown.innerHTML = ""; // Verhindert Duplikate
-                for (let q in this.quests) {
-                    if (!this.progress[q]) {
-                        let option = document.createElement("option");
-                        option.value = q;
-                        option.innerText = q;
-                        dropdown.appendChild(option);
-                    }
-                }
-                document.getElementById("questSelection").classList.remove("hidden");
-            }
+showQuestSelection() {
+    let dropdown = document.getElementById("questDropdown");
+    dropdown.innerHTML = ""; // Verhindert Duplikate
+    let hasQuests = false; // Überprüfung, ob noch offene Quests vorhanden sind
+
+    for (let q in this.quests) {
+        if (!this.progress[q]) {
+            let option = document.createElement("option");
+            option.value = q;
+            option.innerText = q;
+            dropdown.appendChild(option);
+            hasQuests = true;
+        }
+    }
+
+    if (hasQuests) {
+        document.getElementById("questSelection").classList.remove("hidden");
+    } else {
+        alert("Alle Quests sind abgeschlossen! Ruhm und Ehre seien dir sicher!");
+        document.getElementById("questSelection").classList.add("hidden");
+    }
+}
 
             startQuest() {
                 let selectedQuest = document.getElementById("questDropdown").value;
