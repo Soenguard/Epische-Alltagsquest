@@ -326,10 +326,11 @@
 showQuestSelection() {
     let dropdown = document.getElementById("questDropdown");
     dropdown.innerHTML = ""; // Verhindert Duplikate
+
     let hasQuests = false; // Überprüfung, ob noch offene Quests vorhanden sind
 
     for (let q in this.quests) {
-        if (!this.progress[q]) {
+        if (!this.progress[q]) { // Nur offene Quests anzeigen
             let option = document.createElement("option");
             option.value = q;
             option.innerText = q;
