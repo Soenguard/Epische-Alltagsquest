@@ -347,21 +347,29 @@ showQuestSelection() {
     }
 }
 
-            startQuest() {
-                let selectedQuest = document.getElementById("questDropdown").value;
-                if (!selectedQuest) return;
-                this.currentQuest = selectedQuest;
-                document.getElementById("currentQuest").innerText = this.quests[selectedQuest].story;
-                let buttons = document.querySelectorAll("#questActions button");
-                if (this.quests[selectedQuest].options) {
-                    this.quests[selectedQuest].options.forEach((option, index) => {
-                        if (buttons[index]) {
-                            buttons[index].innerText = option.text;
-                        }
-                    });
-                }
-                document.getElementById("questActions").classList.remove("hidden");
+startQuest() {
+    let dropdown = document.getElementById("questDropdown");
+    let selectedQuest = dropdown.value;
+    if (!selectedQuest) return;
+    
+    this.currentQuest = selectedQuest;
+    document.getElementById("currentQuest").innerText = this.quests[selectedQuest].story;
+    
+    let buttons = document.querySelectorAll("#questActions .buttonContainer button");
+    if (this.quests[selectedQuest].options) {
+        this.quests[selectedQuest].options.forEach((option, index) => {
+            if (buttons[index]) {
+                buttons[index].innerText = option.text;
             }
+        });
+    }
+    
+    // Entferne die ausgewählte Quest aus dem Dropdown
+    dropdown.querySelector(`option[value="${selectedQuest}"]`).remove();
+    
+    document.getElementById("questSelection").classList.add("hidden");
+    document.getElementById("questActions").classList.remove("hidden");
+}
 
 chooseAction(index) {
     let effects = this.quests[this.currentQuest].options[index];
