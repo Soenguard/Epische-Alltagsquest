@@ -353,50 +353,58 @@
                 document.getElementById("questActions").classList.remove("hidden");
             }
 
-            chooseAction(index) {
-                let effects = this.quests[this.currentQuest].options[index];
-                
-                // Zufallseinfluss, um zu bestimmen, ob die Aktion erfolgreich oder gescheitert ist
-                let failChance = Math.random(); // Zufallszahl zwischen 0 und 1
-                let failureThreshold = 0.33; // 33% Chance auf Fehlschlag
+chooseAction(index) {
+    let effects = this.quests[this.currentQuest].options[index];
 
-                if (failChance < failureThreshold) {
-                    // Fehlerfall, wenn die Zufallszahl kleiner als der Schwellenwert ist
-                    let failureEffect = Math.floor(Math.random() * 10) + 5; // zufällige Strafe zwischen 5 und 15
-                    this.mentalState -= failureEffect;
-                    
-                    // Zeige den traurigen Smiley
-                    document.getElementById("sadSmiley").style.display = "block";
-                    setTimeout(() => {
-                        document.getElementById("sadSmiley").style.display = "none";
-                    }, 1000); // Zeige den Smiley für 1 Sekunde
+    // Zufallseinfluss, um zu bestimmen, ob die Aktion erfolgreich oder gescheitert ist
+    let failChance = Math.random(); // Zufallszahl zwischen 0 und 1
+    let failureThreshold = 0.33; // 33% Chance auf Fehlschlag
 
-                    alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${failureEffect}% gesenkt.`);
-                } else {
-                    // Erfolgsfall
-                    this.mentalState += effects.effect;
-                    alert(`Die Aktion war erfolgreich! Deine geistige Stabilität ist um ${effects.effect}% erhöht.`);
-                }
+    if (failChance < failureThreshold) {
+        // Fehlerfall, wenn die Zufallszahl kleiner als der Schwellenwert ist
+        let failureEffect = Math.floor(Math.random() * 10) + 5; // zufällige Strafe zwischen 5 und 15
+        this.mentalState -= failureEffect;
 
-                if (this.mentalState <= 0) {
-                    alert("Oh nein! Deine geistige Stabilität ist aufgebraucht. Das Abenteuer endet hier.");
-                    return;
-                }
+        // Traurige Smiley-Animation anzeigen
+        document.getElementById("sadSmiley").style.display = "block";
+        setTimeout(() => {
+            document.getElementById("sadSmiley").style.display = "none";
+        }, 1000); // Zeige den Smiley für 1 Sekunde
 
-                this.progress[this.currentQuest] = true;
-                this.updateUI();
+        alert(`Die Aktion ist gescheitert! Deine geistige Stabilität ist um ${failureEffect}% gesenkt.`);
+    } else {
+        // Erfolgsfall
+        this.mentalState += effects.effect;
 
-                // Zeige den Siegseffekt
-                if (this.progress[this.currentQuest]) {
-                    document.getElementById("victoryAnimation").style.display = "block";
-                    setTimeout(() => {
-                        document.getElementById("victoryAnimation").style.display = "none";
-                    }, 2000); // Zeige den Sieges-Emoji für 2 Sekunden
-                }
+        if (effects.effect > 0) {
+            // Nur wenn die Stabilität steigt, wird die Siegesanimation angezeigt
+            document.getElementById("victoryAnimation").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("victoryAnimation").style.display = "none";
+            }, 2000); // Zeige den Sieges-Emoji für 2 Sekunden
+        } else {
+            // Wenn die Stabilität sinkt, zeige die traurige Smiley-Animation
+            document.getElementById("sadSmiley").style.display = "block";
+            setTimeout(() => {
+                document.getElementById("sadSmiley").style.display = "none";
+            }, 1000); // Zeige den Smiley für 1 Sekunde
+        }
 
-                document.getElementById("questActions").classList.add("hidden");
-                this.currentQuest = "";
-            }
+        alert(`Die Aktion war erfolgreich! Deine geistige Stabilität ist um ${effects.effect}% erhöht.`);
+    }
+
+    if (this.mentalState <= 0) {
+        alert("Oh nein! Deine geistige Stabilität ist aufgebraucht. Das Abenteuer endet hier.");
+        return;
+    }
+
+    this.progress[this.currentQuest] = true;
+    this.updateUI();
+
+    document.getElementById("questActions").classList.add("hidden");
+    this.currentQuest = "";
+}
+
         }
 
         let game = new TextAdventure();
